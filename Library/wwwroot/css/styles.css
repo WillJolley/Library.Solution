@@ -1,0 +1,13 @@
+body {
+  background-color: black;
+  color: palegreen;
+}
+
+div#footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  background: palevioletred;
+  padding: 10px;
+}
