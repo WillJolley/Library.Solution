@@ -2,20 +2,24 @@
   Layout = "_Layout";
 }
 
-<h1>LOGIN SUCCESSFUL (^.^)</h1>
+
 @if (User.Identity.IsAuthenticated)
 {
+  <h1>LOGIN SUCCESSFUL (^.^)</h1>
   <p>Hello @User.Identity.Name!</p>
-  @using (Html.BeginForm("LogOff", "Account"))
+
+  <P>@Html.ActionLink("Books index", "Index", "Books")</P>
+  <p>@Html.ActionLink("Authors index", "Index", "Authors")</p>
+
+  @using (Html.BeginForm("LogOff", "Patrons"))
   {
     <input type="submit" class="btn btn-primary" value="Log out" />
   }
 }
+
 else
 {
-  <p>@Html.ActionLink("Register", "Register")</p>
-  <p>@Html.ActionLink("Log in", "Login")</p>
+  <p>@Html.ActionLink("Home", "Index", "Home")</p>
+  <p>@Html.ActionLink("Register a patron", "Register")</p>
+  <p>@Html.ActionLink("Patron log in", "Login")</p>
 }
-
-<P>@Html.ActionLink("Books index", "Index", "Books")</P>
-<p>@Html.ActionLink("Authors index", "Index", "Authors")</p>

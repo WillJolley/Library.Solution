@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20231022221213_Initial")]
-    partial class Initial
+    [Migration("20231024033655_AddInitial")]
+    partial class AddInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,6 +34,10 @@ namespace Library.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
@@ -92,6 +96,8 @@ namespace Library.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Library.Models.Author", b =>
@@ -135,12 +141,39 @@ namespace Library.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date");
+
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
                     b.HasKey("BookId");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("Library.Models.Checkout", b =>
+                {
+                    b.Property<int>("CheckoutId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CopyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatronId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PatronId1")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("CheckoutId");
+
+                    b.HasIndex("CopyId");
+
+                    b.HasIndex("PatronId1");
+
+                    b.ToTable("Checkouts");
                 });
 
             modelBuilder.Entity("Library.Models.Copy", b =>
@@ -290,6 +323,33 @@ namespace Library.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Library.Models.Librarian", b =>
+                {
+                    b.HasBaseType("Library.Models.ApplicationUser");
+
+                    b.Property<int>("LibrarianId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("Librarian");
+                });
+
+            modelBuilder.Entity("Library.Models.Patron", b =>
+                {
+                    b.HasBaseType("Library.Models.ApplicationUser");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext")
+                        .HasColumnName("Patron_Name");
+
+                    b.Property<int>("PatronId")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("Patron");
+                });
+
             modelBuilder.Entity("Library.Models.AuthorBook", b =>
                 {
                     b.HasOne("Library.Models.Author", "Author")
@@ -307,6 +367,23 @@ namespace Library.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("Library.Models.Checkout", b =>
+                {
+                    b.HasOne("Library.Models.Copy", "Copy")
+                        .WithMany("JoinEntities")
+                        .HasForeignKey("CopyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.Models.Patron", "Patron")
+                        .WithMany("JoinEntities")
+                        .HasForeignKey("PatronId1");
+
+                    b.Navigation("Copy");
+
+                    b.Navigation("Patron");
                 });
 
             modelBuilder.Entity("Library.Models.Copy", b =>
@@ -380,6 +457,16 @@ namespace Library.Migrations
                 {
                     b.Navigation("Copies");
 
+                    b.Navigation("JoinEntities");
+                });
+
+            modelBuilder.Entity("Library.Models.Copy", b =>
+                {
+                    b.Navigation("JoinEntities");
+                });
+
+            modelBuilder.Entity("Library.Models.Patron", b =>
+                {
                     b.Navigation("JoinEntities");
                 });
 #pragma warning restore 612, 618

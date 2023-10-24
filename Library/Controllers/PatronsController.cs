@@ -48,7 +48,7 @@ namespace Library.Controllers
         IdentityResult result = await _userManager.CreateAsync(patron, model.Password);
         if (result.Succeeded)
         {
-          return RedirectToAction("Index");
+          return RedirectToAction("LogIn");
         }
         else
         {

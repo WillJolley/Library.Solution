@@ -14,7 +14,7 @@
   @Html.ValidationSummary("Please fix the following error(s) and then resubmit the form:") 
 }
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+@using (Html.BeginForm("Register", "Patrons", FormMethod.Post))
 {
   @Html.LabelFor(user => user.Email)
   @Html.TextBoxFor(user=> user.Email)

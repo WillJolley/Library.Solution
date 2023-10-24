@@ -49,7 +49,7 @@ namespace Library.Controllers {
       IdentityResult result = await _userManager.CreateAsync(librarian, model.Password);
       if (result.Succeeded)
       {
-        return RedirectToAction("Index");
+        return RedirectToAction("LogIn");
       }
       else
       {
