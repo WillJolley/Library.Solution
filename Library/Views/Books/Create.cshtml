@@ -1,0 +1,26 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Book;
+
+
+@* <p>@Html.ValidationMessageFor(model => model.AuthorId, "", new { @class = "text-danger", @style = "font-weight: 600;" })</p>
+<p>@Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger", @style = "font-weight: 600;" })</p> *@
+
+<h4>Add a new book</h4>
+@using (Html.BeginForm())
+{
+  @Html.LabelFor(model => model.Title)
+  @Html.TextBoxFor(model => model.Title)
+  
+  @* @Html.LabelFor(model => model.Author)
+  @Html.DropDownList("AuthorId") *@
+
+
+
+
+  <input type="submit" value="Add new book" class="btn btn-primary" />
+}
+<p>@Html.ActionLink("Show all books", "Index")</p>
+<p>@Html.ActionLink("Create a new Author", "Create", "Authors")</p>

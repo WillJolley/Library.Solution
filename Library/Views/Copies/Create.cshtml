@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Copy;
+
+<h2>Create a new copy</h2>
+
+@using (Html.BeginForm())
+{
+  @Html.TextBoxFor(model => model.Book.Title)
+  @Html.TextBoxFor(model => model.CopyId)
+  @Html.ValidationMessageFor(model => model.CopyId)
+}
+
+<button type="submit">Create</button>
+
+<p>@Html.ActionLink("Back to list", "Index")</p>
+<p>@Html.ActionLink("Home", "Index", "Home")</p>

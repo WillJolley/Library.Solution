@@ -1,0 +1,32 @@
+@{
+  Layout = "_Layout";
+}
+
+@using Library.Models
+@model Library.Models.Patron
+
+<h2>Checkouts</h2>
+<hr />
+
+@if(@Model.JoinEntities.Count == 0)
+{
+  <p>You haven't checked out any book copies yet.</p>
+}
+else
+{
+  <h4>Book copies you've checked out:</h4>
+  <ul>
+  @foreach(Checkout join in Model.JoinEntities)
+  {
+    <li>@join.Copy.Title</li>
+    @using (Html.BeginForm("DeleteJoin", "Patrons"))
+    {
+      @Html.Hidden("joinId", @join.CheckoutId)
+      <input type="submit" value="Delete"/>
+    }
+  }
+  </ul>
+}
+
+<p>@Html.ActionLink("Books index", "Index", "Books")</p>
+<p>@Html.ActionLink("Authors index", "Index", "Authors")</p>
