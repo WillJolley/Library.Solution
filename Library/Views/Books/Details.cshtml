@@ -1,9 +1,9 @@
 @{
   Layout = "_Layout";
 }
+@using Library.Models;
+@model Library.Models.Book;
 
-@using Library.Models
-@model Library.Models.Book
 
 <h2>Book Details</h2>
 <hr />
@@ -29,8 +29,13 @@ else
     }
   </ul>
 }
-  
+
+<h3>Number of Copies: @Model.Copies.Count()</h3>
+
+
+
 <p>@Html.ActionLink("Edit Book", "Edit", new { id = Model.BookId })</p>
 <p>@Html.ActionLink("Delete Book", "Delete", new { id = Model.BookId })</p>
 <p>@Html.ActionLink("Add an author", "AddAuthor", new { id = Model.BookId })</p>
+<p>@Html.ActionLink("Create a copy", "Create", "Copies")</p>
 <p>@Html.ActionLink("Back to list", "Index")</p>

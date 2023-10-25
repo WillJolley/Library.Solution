@@ -43,6 +43,14 @@ namespace Library.Migrations
                     Image = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Birthday = table.Column<DateOnly>(type: "date", nullable: false),
+                    Discriminator = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LibrarianId = table.Column<int>(type: "int", nullable: true),
+                    Patron_Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PatronId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -94,7 +102,8 @@ namespace Library.Migrations
                     BookId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DueDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,6 +273,7 @@ namespace Library.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Count = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -274,6 +284,34 @@ namespace Library.Migrations
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Checkouts",
+                columns: table => new
+                {
+                    CheckoutId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    PatronId = table.Column<int>(type: "int", nullable: false),
+                    PatronId1 = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CopyId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Checkouts", x => x.CheckoutId);
+                    table.ForeignKey(
+                        name: "FK_Checkouts_AspNetUsers_PatronId1",
+                        column: x => x.PatronId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Checkouts_Copies_CopyId",
+                        column: x => x.CopyId,
+                        principalTable: "Copies",
+                        principalColumn: "CopyId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -326,6 +364,16 @@ namespace Library.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Checkouts_CopyId",
+                table: "Checkouts",
+                column: "CopyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Checkouts_PatronId1",
+                table: "Checkouts",
+                column: "PatronId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Copies_BookId",
                 table: "Copies",
                 column: "BookId");
@@ -352,16 +400,19 @@ namespace Library.Migrations
                 name: "AuthorBooks");
 
             migrationBuilder.DropTable(
-                name: "Copies");
+                name: "Checkouts");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Authors");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Authors");
+                name: "Copies");
 
             migrationBuilder.DropTable(
                 name: "Books");

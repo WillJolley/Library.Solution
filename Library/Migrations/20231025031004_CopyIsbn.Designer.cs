@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20231024031452_ApplicationUserAndCheckoutAndPatronAndLibrarian")]
-    partial class ApplicationUserAndCheckoutAndPatronAndLibrarian
+    [Migration("20231025031004_CopyIsbn")]
+    partial class CopyIsbn
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -183,6 +183,12 @@ namespace Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ISBN")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")

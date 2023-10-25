@@ -2,18 +2,19 @@
   Layout = "_Layout";
 }
 
-@model Library.Models.Copy;
+@model Library.Models.Copy
 
 <h2>Create a new copy</h2>
 
 @using (Html.BeginForm())
 {
-  @Html.TextBoxFor(model => model.Book.Title)
-  @Html.TextBoxFor(model => model.CopyId)
-  @Html.ValidationMessageFor(model => model.CopyId)
+  @Html.LabelFor(model => model.ISBN)
+  @Html.TextBoxFor(model => model.ISBN)
+  
+  @Html.LabelFor(model => model.Book)
+  @Html.DropDownList("BookId")
+
+<input type="submit" value="Create" class="btn btn-default">
 }
 
-<button type="submit">Create</button>
-
-<p>@Html.ActionLink("Back to list", "Index")</p>
-<p>@Html.ActionLink("Home", "Index", "Home")</p>
+<p>@Html.ActionLink("Back to book index", "Index", "Books")</p>

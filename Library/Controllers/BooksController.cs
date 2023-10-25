@@ -11,7 +11,6 @@ using System.Security.Claims;
 
 namespace Library.Controllers
 {
-    [Authorize]
     public class BooksController : Controller
     {
         private readonly LibraryContext _db;
@@ -69,6 +68,7 @@ namespace Library.Controllers
                             // .Include(book => book.Author)
                             .Include(book => book.JoinEntities)
                             .ThenInclude(join => join.Author)
+                            .Include(book => book.Copies)
                             .FirstOrDefault(book => book.BookId == id);
         return View(thisBook);
         }
@@ -103,36 +103,35 @@ namespace Library.Controllers
             return RedirectToAction("Index");
         }
 
-        // public ActionResult AddTag(int id)
-        // {
-        // Book thisBook = _db.Books.FirstOrDefault(books => books.BookId == id);
-        // ViewBag.TagId = new SelectList(_db.Tags, "TagId", "Title");
-        // return View(thisBook);
-        // }
+        public ActionResult AddAuthor(int id)
+        {
+        Book thisBook = _db.Books.FirstOrDefault(books => books.BookId == id);
+        ViewBag.AuthorId = new SelectList(_db.Authors, "AuthorId", "Name");
+        return View(thisBook);
+        }
 
-        // [HttpPost]
-        // public ActionResult AddTag(Book book, int tagId)
-        // {
-        // #nullable enable
-        // ItemTag? joinEntity = _db.ItemTags.FirstOrDefault(join => (join.TagId == tagId && join.ItemId == item.ItemId));
-        // #nullable disable
-        // if (joinEntity == null && tagId != 0)
-        // {
-        //     _db.ItemTags.Add(new ItemTag() { TagId = tagId, ItemId = item.ItemId });
-        //     _db.SaveChanges();
-        // }
-        // return RedirectToAction("Details", new { id = item.ItemId });
-        // }
+        [HttpPost]
+        public ActionResult AddAuthor(Book book, int authorId)
+        {
+        #nullable enable
+        AuthorBook? joinEntity = _db.AuthorBooks.FirstOrDefault(join => (join.AuthorId == authorId && join.BookId == book.BookId));
+        #nullable disable
+        if (joinEntity == null && authorId != 0)
+        {
+            _db.AuthorBooks.Add(new AuthorBook() { AuthorId = authorId, BookId = book.BookId });
+            _db.SaveChanges();
+        }
+        return RedirectToAction("Details", new { id = book.BookId });
+        }
 
-    //     [HttpPost]
-    //     public ActionResult DeleteJoin(int joinId)
-    //     {
-    //         ItemTag joinEntry = _db.ItemTags.FirstOrDefault(entry => entry.ItemTagId == joinId);
-    //         _db.ItemTags.Remove(joinEntry);
-    //         _db.SaveChanges();
-    //         return RedirectToAction("Index");
-    //     }
-    // }
+        [HttpPost]
+        public ActionResult DeleteJoin(int joinId)
+        {
+            AuthorBook joinEntry = _db.AuthorBooks.FirstOrDefault(entry => entry.AuthorBookId == joinId);
+            _db.AuthorBooks.Remove(joinEntry);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+    }
 
-}
 }

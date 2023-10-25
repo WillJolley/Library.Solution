@@ -37,7 +37,7 @@ namespace Library.Controllers
     {
       _db.Copies.Add(copy);
       _db.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction("Details", "Books", new { id = copy.BookId } );
     }
 
     public ActionResult Details(int id)

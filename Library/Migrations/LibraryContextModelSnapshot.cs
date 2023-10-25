@@ -183,6 +183,12 @@ namespace Library.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ISBN")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
