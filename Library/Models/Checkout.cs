@@ -6,6 +6,7 @@ namespace Library.Models
     public int PatronId { get; set; }
     public Patron Patron { get; set; }
     public int CopyId { get; set; }
+    public int BookId { get; set; }
     public Copy Copy { get; set; }
   }
 }

@@ -16,11 +16,11 @@
 }
 else
 {
-  <h4>This book has the following authors:</h4>
+  <h4>Authors:</h4>
   <ul>
     @foreach(AuthorBook join in Model.JoinEntities)
     {
-      <li>Author: @join.Author.Name</li>
+      <li>@Html.ActionLink($"{join.Author.Name}", "Details", "Authors", new { id = join.Author.AuthorId })</li>
       @using (Html.BeginForm("DeleteJoin", "Books"))
       {
         @Html.Hidden("joinId", @join.AuthorBookId)
@@ -32,10 +32,28 @@ else
 
 <h3>Number of Copies: @Model.Copies.Count()</h3>
 
+@foreach(Copy copy in Model.Copies)
+{
+  @if(copy.CheckedOut == true)
+  {
+    <h3>Checked out copies:</h3>
+    <ul>
+      <li>ISBN: @copy.ISBN</li>
+    </ul>
+  }
+  else 
+  {
+    <h3>Available copies:</h3>
+    <ul>
+      <li>ISBN: @copy.ISBN | @Html.ActionLink("Checkout", "Checkout", "Copies", new { id = copy.CopyId })</li>
+    </ul>
+  }
+}
+
 
 
 <p>@Html.ActionLink("Edit Book", "Edit", new { id = Model.BookId })</p>
 <p>@Html.ActionLink("Delete Book", "Delete", new { id = Model.BookId })</p>
-<p>@Html.ActionLink("Add an author", "AddAuthor", new { id = Model.BookId })</p>
+<p>@Html.ActionLink("Add an author to this book", "AddAuthor", new { id = Model.BookId })</p>
 <p>@Html.ActionLink("Create a copy", "Create", "Copies")</p>
 <p>@Html.ActionLink("Back to list", "Index")</p>

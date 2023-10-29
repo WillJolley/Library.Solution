@@ -54,13 +54,13 @@ namespace Library.Controllers
             }
         }
         }
-        public ActionResult Login()
+        public ActionResult LogIn()
         {
         return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login(LoginViewModel model)
+        public async Task<ActionResult> LogIn(LoginViewModel model)
         {
         if (!ModelState.IsValid)
         {

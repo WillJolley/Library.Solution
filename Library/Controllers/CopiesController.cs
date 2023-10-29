@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Library.Controllers
 {
-
+  [Authorize]
   public class CopiesController : Controller
   {
     private readonly LibraryContext _db;
@@ -63,6 +63,31 @@ namespace Library.Controllers
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
+
+    public ActionResult Checkout(int id)
+    {
+        Copy thisCopy = _db.Copies.FirstOrDefault(copy => copy.CopyId == id);
+        ViewBag.PatronId = new SelectList(_db.Patrons, "PatronId", "Name");
+        return View(thisCopy);
+    }
+
+    [HttpPost]
+    public ActionResult Checkout(Copy copy, int patronId)
+    {
+      #nullable enable
+      Checkout? joinEntity = _db.Checkouts.FirstOrDefault(join => (join.PatronId == patronId && join.CopyId == copy.CopyId));
+      #nullable disable
+      if (joinEntity == null && patronId != 0)
+      {
+          _db.Checkouts.Add(new Checkout() { PatronId = patronId, CopyId = copy.CopyId });
+          _db.SaveChanges();
+      }
+
+      _db.Copies.Update(copy);
+      _db.SaveChanges();
+      
+      return RedirectToAction("Checkouts", "Patrons", new { id = patronId });
+    }
     
     // public ActionResult Delete(int id)
     // {
@@ -80,6 +105,14 @@ namespace Library.Controllers
       return RedirectToAction("Index");
     }
 
+    [HttpPost]
+      public ActionResult DeleteJoin(int joinId)
+      {
+          Checkout joinEntry = _db.Checkouts.FirstOrDefault(entry => entry.CheckoutId == joinId);
+          _db.Checkouts.Remove(joinEntry);
+          _db.SaveChanges();
+          return RedirectToAction("Index");
+      }
   }
 }
 

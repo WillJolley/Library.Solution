@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20231025014339_Initial")]
+    [Migration("20231029223818_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,16 +36,15 @@ namespace Library.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Firstname")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Image")
                         .HasColumnType("longtext");
@@ -96,8 +95,6 @@ namespace Library.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Library.Models.Author", b =>
@@ -164,14 +161,11 @@ namespace Library.Migrations
                     b.Property<int>("PatronId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PatronId1")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("CheckoutId");
 
                     b.HasIndex("CopyId");
 
-                    b.HasIndex("PatronId1");
+                    b.HasIndex("PatronId");
 
                     b.ToTable("Checkouts");
                 });
@@ -185,7 +179,10 @@ namespace Library.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Count")
+                    b.Property<bool>("CheckedOut")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("ISBN")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -196,6 +193,23 @@ namespace Library.Migrations
                     b.HasIndex("BookId");
 
                     b.ToTable("Copies");
+                });
+
+            modelBuilder.Entity("Library.Models.Patron", b =>
+                {
+                    b.Property<int>("PatronId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Birthdate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("PatronId");
+
+                    b.ToTable("Patrons");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -326,33 +340,6 @@ namespace Library.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Library.Models.Librarian", b =>
-                {
-                    b.HasBaseType("Library.Models.ApplicationUser");
-
-                    b.Property<int>("LibrarianId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.HasDiscriminator().HasValue("Librarian");
-                });
-
-            modelBuilder.Entity("Library.Models.Patron", b =>
-                {
-                    b.HasBaseType("Library.Models.ApplicationUser");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext")
-                        .HasColumnName("Patron_Name");
-
-                    b.Property<int>("PatronId")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Patron");
-                });
-
             modelBuilder.Entity("Library.Models.AuthorBook", b =>
                 {
                     b.HasOne("Library.Models.Author", "Author")
@@ -382,7 +369,9 @@ namespace Library.Migrations
 
                     b.HasOne("Library.Models.Patron", "Patron")
                         .WithMany("JoinEntities")
-                        .HasForeignKey("PatronId1");
+                        .HasForeignKey("PatronId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Copy");
 

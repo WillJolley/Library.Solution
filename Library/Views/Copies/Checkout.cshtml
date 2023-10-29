@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Copy
+
+<h2>Checkout this book</h2>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.CopyId)
+
+    @Html.CheckBoxFor(model => model.CheckedOut)
+
+    @Html.Label("Select patron")
+    @Html.DropDownList("PatronId")
+
+    <input type="submit" value="Checkout" class="btn btn-default">
+}
+

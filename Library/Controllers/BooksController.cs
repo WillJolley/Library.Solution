@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System;
 
 namespace Library.Controllers
 {
+    [Authorize]
     public class BooksController : Controller
     {
         private readonly LibraryContext _db;
@@ -31,11 +33,29 @@ namespace Library.Controllers
         //                     .ToList();
         // return View(userItems);
         // }
-
-        public ActionResult Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string searchString)
         {
-        return View(_db.Books.ToList());
+            if (_db.Books == null)
+            {
+                return Problem("Entity set 'Library.Books'  is null.");
+            }
+
+            var books = from m in _db.Books
+                        select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title!.Contains(searchString));
+            }
+
+            return View(await _db.Books.ToListAsync());
         }
+
+        // public ActionResult Index()
+        // {
+        // return View(_db.Books.ToList());
+        // }
 
         public ActionResult Create()
         {
@@ -61,7 +81,7 @@ namespace Library.Controllers
                 return RedirectToAction("Index");
             }
         }
-
+        [AllowAnonymous]
         public ActionResult Details(int id)
         {
         Book thisBook = _db.Books
@@ -133,5 +153,4 @@ namespace Library.Controllers
             return RedirectToAction("Index");
         }
     }
-
 }

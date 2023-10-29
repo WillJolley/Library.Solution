@@ -38,19 +38,13 @@ namespace Library.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Firstname = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Website = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Image = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Birthday = table.Column<DateOnly>(type: "date", nullable: false),
-                    Discriminator = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LibrarianId = table.Column<int>(type: "int", nullable: true),
-                    Patron_Name = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PatronId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -108,6 +102,22 @@ namespace Library.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.BookId);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Patrons",
+                columns: table => new
+                {
+                    PatronId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Birthdate = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patrons", x => x.PatronId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -273,8 +283,9 @@ namespace Library.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Count = table.Column<int>(type: "int", nullable: false),
-                    BookId = table.Column<int>(type: "int", nullable: false)
+                    ISBN = table.Column<int>(type: "int", nullable: false),
+                    BookId = table.Column<int>(type: "int", nullable: false),
+                    CheckedOut = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -295,23 +306,22 @@ namespace Library.Migrations
                     CheckoutId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     PatronId = table.Column<int>(type: "int", nullable: false),
-                    PatronId1 = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     CopyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Checkouts", x => x.CheckoutId);
                     table.ForeignKey(
-                        name: "FK_Checkouts_AspNetUsers_PatronId1",
-                        column: x => x.PatronId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_Checkouts_Copies_CopyId",
                         column: x => x.CopyId,
                         principalTable: "Copies",
                         principalColumn: "CopyId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Checkouts_Patrons_PatronId",
+                        column: x => x.PatronId,
+                        principalTable: "Patrons",
+                        principalColumn: "PatronId",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -369,9 +379,9 @@ namespace Library.Migrations
                 column: "CopyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Checkouts_PatronId1",
+                name: "IX_Checkouts_PatronId",
                 table: "Checkouts",
-                column: "PatronId1");
+                column: "PatronId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Copies_BookId",
@@ -406,13 +416,16 @@ namespace Library.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Authors");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Authors");
+
+            migrationBuilder.DropTable(
                 name: "Copies");
+
+            migrationBuilder.DropTable(
+                name: "Patrons");
 
             migrationBuilder.DropTable(
                 name: "Books");

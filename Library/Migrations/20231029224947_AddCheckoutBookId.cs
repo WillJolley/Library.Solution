@@ -4,13 +4,13 @@
 
 namespace Library.Migrations
 {
-    public partial class CopyIsbn : Migration
+    public partial class AddCheckoutBookId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "ISBN",
-                table: "Copies",
+                name: "BookId",
+                table: "Checkouts",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
@@ -19,8 +19,8 @@ namespace Library.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ISBN",
-                table: "Copies");
+                name: "BookId",
+                table: "Checkouts");
         }
     }
 }

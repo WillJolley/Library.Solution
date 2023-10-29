@@ -18,7 +18,7 @@ else
   <ul>
   @foreach(Checkout join in Model.JoinEntities)
   {
-    <li>@join.Copy.Title</li>
+    <li>@join.Copy.ISBN</li>
     @using (Html.BeginForm("DeleteJoin", "Patrons"))
     {
       @Html.Hidden("joinId", @join.CheckoutId)
@@ -29,4 +29,4 @@ else
 }
 
 <p>@Html.ActionLink("Books index", "Index", "Books")</p>
-<p>@Html.ActionLink("Authors index", "Index", "Authors")</p>
+<p>@Html.ActionLink("Authors index", "Index", "Authors")</p> 

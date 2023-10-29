@@ -11,6 +11,7 @@ using System.Security.Claims;
 
 namespace Library.Controllers
 {
+  [Authorize]
   public class AuthorsController : Controller
   {
     private readonly LibraryContext _db;
@@ -19,12 +20,14 @@ namespace Library.Controllers
     {
       _db = db;
     }
-
+    
+    [AllowAnonymous]
     public ActionResult Index()
     {
       return View(_db.Authors.ToList());
     }
 
+    [AllowAnonymous]
     public ActionResult Details(int id)
     {
       Author thisAuth = _db.Authors
