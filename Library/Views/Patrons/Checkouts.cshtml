@@ -8,20 +8,7 @@
 <h2>Checkouts</h2>
 <hr />
 
-@if(@Model.Checkouts.Count == 0)
-{
-  <p>You haven't checked out any book copies yet.</p>
-}
-else
-{
-  <h4>Book copies you've checked out:</h4>
-  <ul>
-  @foreach(Copy checkout in Model.Checkouts)
-  {
-    <li>@checkout.Book.Title</li>
-  }
-  </ul>
-}
+<p>@Model.Name</p>
 
 <p>@Html.ActionLink("Books index", "Index", "Books")</p>
 <p>@Html.ActionLink("Authors index", "Index", "Authors")</p> 

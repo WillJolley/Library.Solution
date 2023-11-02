@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System;
 
 namespace Library.Controllers
 {
@@ -39,10 +40,11 @@ namespace Library.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Checkouts(int PatronId)
+        public ActionResult Checkouts(int id)
         {
-            Patron patron = _db.Patrons.FirstOrDefault(patron => patron.PatronId == PatronId);
-            RedirectToAction("Details", patron);
+            Patron patron = _db.Patrons.FirstOrDefault(patron => patron.PatronId == id);   
+            Console.WriteLine(patron);                                 
+            return View(patron);
         }
     }
 }
