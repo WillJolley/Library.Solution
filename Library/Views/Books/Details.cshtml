@@ -38,14 +38,14 @@ else
   {
     <h3>Checked out copies:</h3>
     <ul>
-      <li>ISBN: @copy.ISBN</li>
+      <li>Copy ID: @copy.CopyId</li>
     </ul>
   }
   else 
   {
     <h3>Available copies:</h3>
     <ul>
-      <li>ISBN: @copy.ISBN | @Html.ActionLink("Checkout", "Checkout", "Copies", new { id = copy.CopyId })</li>
+      <li>Copy ID: @copy.CopyId | @Html.ActionLink("Checkout", "Checkout", "Copies", new { id = copy.CopyId })</li>
     </ul>
   }
 }

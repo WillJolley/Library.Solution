@@ -147,30 +147,6 @@ namespace Library.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("Library.Models.Checkout", b =>
-                {
-                    b.Property<int>("CheckoutId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CopyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PatronId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CheckoutId");
-
-                    b.HasIndex("CopyId");
-
-                    b.HasIndex("PatronId");
-
-                    b.ToTable("Checkouts");
-                });
-
             modelBuilder.Entity("Library.Models.Copy", b =>
                 {
                     b.Property<int>("CopyId")
@@ -183,15 +159,14 @@ namespace Library.Migrations
                     b.Property<bool>("CheckedOut")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("ISBN")
+                    b.Property<int?>("PatronId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("longtext");
 
                     b.HasKey("CopyId");
 
                     b.HasIndex("BookId");
+
+                    b.HasIndex("PatronId");
 
                     b.ToTable("Copies");
                 });
@@ -360,25 +335,6 @@ namespace Library.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("Library.Models.Checkout", b =>
-                {
-                    b.HasOne("Library.Models.Copy", "Copy")
-                        .WithMany("JoinEntities")
-                        .HasForeignKey("CopyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Library.Models.Patron", "Patron")
-                        .WithMany("JoinEntities")
-                        .HasForeignKey("PatronId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Copy");
-
-                    b.Navigation("Patron");
-                });
-
             modelBuilder.Entity("Library.Models.Copy", b =>
                 {
                     b.HasOne("Library.Models.Book", "Book")
@@ -386,6 +342,10 @@ namespace Library.Migrations
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Library.Models.Patron", null)
+                        .WithMany("Checkouts")
+                        .HasForeignKey("PatronId");
 
                     b.Navigation("Book");
                 });
@@ -453,14 +413,9 @@ namespace Library.Migrations
                     b.Navigation("JoinEntities");
                 });
 
-            modelBuilder.Entity("Library.Models.Copy", b =>
-                {
-                    b.Navigation("JoinEntities");
-                });
-
             modelBuilder.Entity("Library.Models.Patron", b =>
                 {
-                    b.Navigation("JoinEntities");
+                    b.Navigation("Checkouts");
                 });
 #pragma warning restore 612, 618
         }

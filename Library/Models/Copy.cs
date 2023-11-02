@@ -4,12 +4,13 @@ namespace Library.Models
 {
   public class Copy
   {
-    public string Title { get; set; }
+    // public string Title { get; set; }
     public int CopyId { get; set; }
-    public int ISBN { get; set; }
+    // public int ISBN { get; set; }
     public int BookId { get; set; }
     public bool CheckedOut { get; set; }
     public Book Book { get; set; }
-    public List<Checkout> JoinEntities { get; }
+    // public List<Checkout> JoinEntities { get; }
+    public int? PatronId { get; set; }
   }
 }

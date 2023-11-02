@@ -8,6 +8,7 @@ namespace Library.Models
     public int PatronId { get; set; }
     public string Name { get; set; }
     public DateOnly Birthdate { get; set; }
-    public List<Checkout> JoinEntities { get; }
+    // public List<Checkout> JoinEntities { get; }
+    public List<Copy> Checkouts { get; set; }
   }
 }

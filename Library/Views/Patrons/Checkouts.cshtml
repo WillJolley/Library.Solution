@@ -8,7 +8,7 @@
 <h2>Checkouts</h2>
 <hr />
 
-@if(@Model.JoinEntities.Count == 0)
+@if(@Model.Checkouts.Count == 0)
 {
   <p>You haven't checked out any book copies yet.</p>
 }
@@ -16,14 +16,9 @@ else
 {
   <h4>Book copies you've checked out:</h4>
   <ul>
-  @foreach(Checkout join in Model.JoinEntities)
+  @foreach(Copy checkout in Model.Checkouts)
   {
-    <li>@join.Copy.ISBN</li>
-    @using (Html.BeginForm("DeleteJoin", "Patrons"))
-    {
-      @Html.Hidden("joinId", @join.CheckoutId)
-      <input type="submit" value="Delete"/>
-    }
+    <li>@checkout.Book.Title</li>
   }
   </ul>
 }

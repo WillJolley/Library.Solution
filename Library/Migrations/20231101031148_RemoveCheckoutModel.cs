@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Library.Migrations
 {
-    public partial class Initial : Migration
+    public partial class RemoveCheckoutModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -281,11 +281,9 @@ namespace Library.Migrations
                 {
                     CopyId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ISBN = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
-                    CheckedOut = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    CheckedOut = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    PatronId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -296,29 +294,8 @@ namespace Library.Migrations
                         principalTable: "Books",
                         principalColumn: "BookId",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Checkouts",
-                columns: table => new
-                {
-                    CheckoutId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    PatronId = table.Column<int>(type: "int", nullable: false),
-                    CopyId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Checkouts", x => x.CheckoutId);
                     table.ForeignKey(
-                        name: "FK_Checkouts_Copies_CopyId",
-                        column: x => x.CopyId,
-                        principalTable: "Copies",
-                        principalColumn: "CopyId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Checkouts_Patrons_PatronId",
+                        name: "FK_Copies_Patrons_PatronId",
                         column: x => x.PatronId,
                         principalTable: "Patrons",
                         principalColumn: "PatronId",
@@ -374,19 +351,14 @@ namespace Library.Migrations
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Checkouts_CopyId",
-                table: "Checkouts",
-                column: "CopyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Checkouts_PatronId",
-                table: "Checkouts",
-                column: "PatronId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Copies_BookId",
                 table: "Copies",
                 column: "BookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Copies_PatronId",
+                table: "Copies",
+                column: "PatronId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -410,7 +382,7 @@ namespace Library.Migrations
                 name: "AuthorBooks");
 
             migrationBuilder.DropTable(
-                name: "Checkouts");
+                name: "Copies");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -422,13 +394,10 @@ namespace Library.Migrations
                 name: "Authors");
 
             migrationBuilder.DropTable(
-                name: "Copies");
+                name: "Books");
 
             migrationBuilder.DropTable(
                 name: "Patrons");
-
-            migrationBuilder.DropTable(
-                name: "Books");
         }
     }
 }

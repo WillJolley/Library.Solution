@@ -38,6 +38,12 @@ namespace Library.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public ActionResult Checkouts(int PatronId)
+        {
+            Patron patron = _db.Patrons.FirstOrDefault(patron => patron.PatronId == PatronId);
+            RedirectToAction("Details", patron);
+        }
     }
 }
 

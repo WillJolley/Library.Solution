@@ -6,6 +6,19 @@
 
 <h2>Edit Copy</h2>
 
+<h2>Checkout this book</h2>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(model => model.CopyId)
+
+    @Html.CheckBoxFor(model => model.CheckedOut)
+
+    @Html.Label("Select patron")
+    @Html.DropDownList("PatronId")
+
+    <input type="submit" value="Checkout" class="btn btn-default">
+}
+
 
 @Html.ActionLink("Return to copies index", "Index")
 @Html.ActionLink("Home", "Index", "Home")

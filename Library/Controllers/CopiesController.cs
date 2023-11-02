@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using System;
 
 namespace Library.Controllers
 {
@@ -55,7 +56,6 @@ namespace Library.Controllers
       return View(thisCopy);
     }
 
-
     [HttpPost]
     public ActionResult Edit(Copy copy)
     {
@@ -71,22 +71,35 @@ namespace Library.Controllers
         return View(thisCopy);
     }
 
-    [HttpPost]
-    public ActionResult Checkout(Copy copy, int patronId)
-    {
-      #nullable enable
-      Checkout? joinEntity = _db.Checkouts.FirstOrDefault(join => (join.PatronId == patronId && join.CopyId == copy.CopyId));
-      #nullable disable
-      if (joinEntity == null && patronId != 0)
-      {
-          _db.Checkouts.Add(new Checkout() { PatronId = patronId, CopyId = copy.CopyId });
-          _db.SaveChanges();
-      }
+    // [HttpPost]
+    // public ActionResult Checkout(Copy copy, int patronId)
+    // {
+    //   #nullable enable
+    //   Checkout? joinEntity = _db.Checkouts.FirstOrDefault(join => join.PatronId == patronId && join.CopyId == copy.CopyId);
+    //   #nullable disable
+    //   if (joinEntity == null && patronId != 0)
+    //   {
+    //       _db.Checkouts.Add(new Checkout() { PatronId = patronId, CopyId = copy.CopyId });
+    //       _db.SaveChanges();
+    //   }
 
-      _db.Copies.Update(copy);
-      _db.SaveChanges();
+    //   _db.Copies.Update(copy);
+    //   _db.SaveChanges();
       
-      return RedirectToAction("Checkouts", "Patrons", new { id = patronId });
+    //   return RedirectToAction("Checkouts", "Patrons", new { id = patronId });
+    // }
+
+    [HttpPost]
+    public ActionResult Checkout(Copy copy, int PatronId)
+    {
+        Copy copyThatsBeingCheckedOut = _db.Copies.FirstOrDefault(thing => thing.CopyId == copy.CopyId);
+        copyThatsBeingCheckedOut.PatronId = PatronId;
+        _db.Copies.Update(copyThatsBeingCheckedOut);
+        Patron patronWhosCheckingOut = _db.Patrons.FirstOrDefault(patron => patron.PatronId == PatronId);
+        patronWhosCheckingOut.Checkouts.Add(copyThatsBeingCheckedOut);
+        _db.Patrons.Update(patronWhosCheckingOut);
+        _db.SaveChanges();
+      return RedirectToAction("Checkouts", "Patrons", new { id = PatronId });
     }
     
     // public ActionResult Delete(int id)
@@ -105,14 +118,14 @@ namespace Library.Controllers
       return RedirectToAction("Index");
     }
 
-    [HttpPost]
-      public ActionResult DeleteJoin(int joinId)
-      {
-          Checkout joinEntry = _db.Checkouts.FirstOrDefault(entry => entry.CheckoutId == joinId);
-          _db.Checkouts.Remove(joinEntry);
-          _db.SaveChanges();
-          return RedirectToAction("Index");
-      }
+    // [HttpPost]
+    //   public ActionResult DeleteJoin(int joinId)
+    //   {
+    //       Checkout joinEntry = _db.Checkouts.FirstOrDefault(entry => entry.CheckoutId == joinId);
+    //       _db.Checkouts.Remove(joinEntry);
+    //       _db.SaveChanges();
+    //       return RedirectToAction("Index");
+    //   }
   }
 }
 
