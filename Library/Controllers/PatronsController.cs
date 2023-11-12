@@ -42,8 +42,9 @@ namespace Library.Controllers
 
         public ActionResult Checkouts(int id)
         {
-            Patron patron = _db.Patrons.FirstOrDefault(patron => patron.PatronId == id);   
-            Console.WriteLine(patron);                                 
+            Patron patron = _db.Patrons
+                                        .Include(patron => patron.Checkouts)
+                                        .FirstOrDefault(patron => patron.PatronId == id);                                   
             return View(patron);
         }
     }
